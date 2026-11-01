@@ -1,0 +1,38 @@
+
+name: CHM DAW - Windows Diagnostic
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnostic:
+    runs-on: windows-2022
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Zrythm
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Check Windows build tools
+        shell: pwsh
+        run: |
+          Write-Host "=== CHM DAW ==="
+          cmake --version
+          python --version
+          git --version
+
+      - name: Check MSVC compiler
+        shell: cmd
+        run: |
+          call "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          cl
+
+      - name: Check Zrythm source
+        shell: pwsh
+        run: |
+          if (!(Test-Path "CMakeLists.txt")) {
+            throw "CMakeLists.txt not found"
+          }
+          Write-Host "Zrythm source detected"
