@@ -1,13 +1,13 @@
 
-name: CHM DAW - Windows Diagnostic
+name: CHM DAW - Windows Build
 
 on:
   workflow_dispatch:
 
 jobs:
-  diagnostic:
+  build:
     runs-on: windows-2022
-    timeout-minutes: 15
+    timeout-minutes: 360
 
     steps:
       - name: Checkout Zrythm
@@ -15,24 +15,51 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Check Windows build tools
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Conan
         shell: pwsh
         run: |
-          Write-Host "=== CHM DAW ==="
-          cmake --version
-          python --version
-          git --version
+          python -m pip install -r requirements.txt
+          conan --version
 
-      - name: Check MSVC compiler
-        shell: cmd
-        run: |
-          call "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          cl
-
-      - name: Check Zrythm source
+      - name: Configure Conan
         shell: pwsh
         run: |
-          if (!(Test-Path "CMakeLists.txt")) {
-            throw "CMakeLists.txt not found"
-          }
-          Write-Host "Zrythm source detected"
+          conan config install conan
+          git submodule update --init --recursive
+          conan remote add conan-local-index ext/conan-center-index
+          python tools/export_conan_recipes.py
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          conan install . -pr:h msvc_release -pr:b msvc_release --build=missing
+
+      - name: Configure CMake
+        shell: pwsh
+        run: |
+          cmake --preset default
+
+      - name: Build Zrythm
+        shell: pwsh
+        run: |
+          cmake --build conanbuild/Release --config Release --parallel 2
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: CHM-DAW-Windows
+          path: |
+            conanbuild/Release/**/*.exe
+            conanbuild/Release/**/*.dll
+          if-no-files-found: error
