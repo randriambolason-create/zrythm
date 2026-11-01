@@ -43,7 +43,8 @@ jobs:
       - name: Install dependencies
         shell: pwsh
         run: |
-          conan install . -pr:h msvc_release -pr:b msvc_release --build=missing
+          
+          conan install . -pr:h msvc_release -pr:b msvc_release -s:h compiler.version=194 --build=missing
 
       - name: Configure CMake
         shell: pwsh
