@@ -1,5 +1,5 @@
 
-name: CHM DAW - Windows Build
+name: CHM DAW - Windows Complete Build
 
 on:
   workflow_dispatch:
@@ -40,10 +40,17 @@ jobs:
           conan remote add conan-local-index ext/conan-center-index
           python tools/export_conan_recipes.py
 
+      - name: Restore Conan cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.conan2/p
+          key: conan-windows-v1-${{ hashFiles('conanfile.py', 'conan.lock') }}
+          restore-keys: |
+            conan-windows-v1-
+
       - name: Install dependencies
         shell: pwsh
         run: |
-          
           conan install . -pr:h msvc_release -pr:b msvc_release -s:h compiler.version=194 --build=missing
 
       - name: Configure CMake
@@ -56,11 +63,37 @@ jobs:
         run: |
           cmake --build conanbuild/Release --config Release --parallel 2
 
-      - name: Upload Windows build
+      - name: Check Windows package
+        shell: pwsh
+        run: |
+          $products = "conanbuild/Release/products"
+
+          if (!(Test-Path $products)) {
+            throw "Products directory missing"
+          }
+
+          Get-ChildItem $products -Recurse |
+            Select-Object FullName
+
+          $exe = Get-ChildItem $products -Recurse -Filter zrythm.exe
+
+          if (!$exe) {
+            throw "zrythm.exe missing"
+          }
+
+          $lv2 = Get-ChildItem $products -Recurse -Directory |
+            Where-Object { $_.Name -eq "lv2-specs" }
+
+          if (!$lv2) {
+            throw "LV2 specifications missing"
+          }
+
+          Write-Host "Executable and LV2 directory found"
+
+      - name: Upload complete Windows build
         uses: actions/upload-artifact@v4
         with:
-          name: CHM-DAW-Windows
-          path: |
-            conanbuild/Release/**/*.exe
-            conanbuild/Release/**/*.dll
+          name: CHM-DAW-Windows-Complete
+          path: conanbuild/Release/products/
           if-no-files-found: error
+          retention-days: 7
