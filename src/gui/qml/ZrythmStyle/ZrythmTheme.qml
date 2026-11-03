@@ -15,7 +15,7 @@ QtObject {
 
   readonly property real animationDuration: 200
   readonly property int animationEasingType: Easing.OutExpo
-  property color alternateBackgroundColor: darkMode ? "#0F0F0F" : "#D9D9D9"
+  property color alternateBackgroundColor: darkMode ? "#11151B" : "#D9D9D9"
   readonly property font arrangerObjectBoldTextFont: ({
       "family": root.fontFamily,
       "pixelSize": 11,
@@ -27,8 +27,8 @@ QtObject {
       "weight": Font.Medium
     })
   property color backgroundAppendColor: darkMode ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(0, 0, 0, 0.25) // color to be appended to things that stand out
-  property color backgroundColor: darkMode ? "#000000" : "#FFFFFF"
-  property color buttonBackgroundColor: darkMode ? "#323232" : "#CDCDCD"
+  property color backgroundColor: darkMode ? "#14171C" : "#FFFFFF"
+  property color buttonBackgroundColor: darkMode ? "#303946" : "#CDCDCD"
   readonly property real buttonHeight: 24
   property color buttonHoverBackgroundAppendColor: darkMode ? Qt.rgba(1, 1, 1, 0.1) : Qt.rgba(0, 0, 0, 0.1)
   readonly property real buttonPadding: 4
@@ -40,7 +40,7 @@ QtObject {
     })
   // the page color raised by the same perceptual step (≈ 3.7 L*) as
   // alternateBackgroundColor is recessed
-  property color cardColor: darkMode ? "#212121" : "#EDEDED"
+  property color cardColor: darkMode ? "#252C35" : "#EDEDED"
   readonly property color celestialBlueColor: "#009DFF"
   // The two polarity inks a fill's text/glyph may take; the one passing
   // contrast against the fill is chosen by polarityTextColor()
@@ -112,7 +112,7 @@ QtObject {
   // Notification surfaces: the severity hue at a fixed lightness per mode
   // (see DESIGN.md, Notifications); info uses a neutral surface
   property color notificationSurfaceErrorColor: darkMode ? "#421C19" : "#FFCFCA"
-  property color notificationSurfaceInfoColor: darkMode ? "#292929" : "#DEDEDE"
+  property color notificationSurfaceInfoColor: darkMode ? "#252C35" : "#DEDEDE"
   property color notificationSurfaceSuccessColor: darkMode ? "#003229" : "#B4ECDE"
   property color notificationSurfaceWarningColor: darkMode ? "#332800" : "#ECDEB1"
   readonly property font normalTextFont: ({
@@ -158,9 +158,9 @@ QtObject {
   // The light-mode page color; the reference the light-mode color
   // derivations measure their contrast against
   readonly property color lightPageColor: "#E3E3E3"
-  property color pageColor: darkMode ? "#161616" : lightPageColor
+  property color pageColor: darkMode ? "#20252D" : lightPageColor
   property color placeholderTextColor: darkMode ? Qt.rgba(1, 1, 1, 0.5) : Qt.rgba(0, 0, 0, 0.5)
-  property color primaryColor: zrythmColor
+  property color primaryColor: "#19C6D2"
 
   property color recordColor: darkMode ? "#D90368" : "#9E004A"
 
@@ -187,7 +187,7 @@ QtObject {
   readonly property color springGreen: "#40FFA0"
   readonly property color successColor: darkMode ? "#009B86" : "#006456"
   readonly property color superorangeColor: "#FF5500"
-  property color textColor: darkMode ? "#E3E3E3" : "#161616" // used in contrast with pageColor
+  property color textColor: darkMode ? "#E4EAF0" : "#161616" // used in contrast with pageColor
   readonly property font trackNameTextFont: ({
       "family": root.fontFamily,
       "pixelSize": 12,
@@ -207,7 +207,7 @@ QtObject {
       "pixelSize": 8,
       "weight": Font.Normal
     })
-  readonly property color zrythmColor: "#FFAE00"
+  readonly property color zrythmColor: "#19C6D2"
 
   function adjustColorForHoverOrVisualFocusOrDown(arg: color, hovered: bool, focused: bool, down: bool): color {
     if (!hovered && !focused && !down)
